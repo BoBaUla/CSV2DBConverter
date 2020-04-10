@@ -1,4 +1,5 @@
 ﻿using CSV2DBConverter.Adapter;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CSV2DBConverter
@@ -38,4 +39,5 @@ namespace CSV2DBConverter
             Body = file.Skip(tableLine + 1).ToArray();
         }
     }
+
 }
