@@ -1,0 +1,11 @@
+F:\Repositories\CSV2DBConverter\UITool\obj\Debug\UITool.csprojAssemblyReference.cache
+F:\Repositories\CSV2DBConverter\UITool\obj\Debug\UITool.Form1.resources
+F:\Repositories\CSV2DBConverter\UITool\obj\Debug\UITool.Properties.Resources.resources
+F:\Repositories\CSV2DBConverter\UITool\obj\Debug\UITool.csproj.GenerateResource.cache
+F:\Repositories\CSV2DBConverter\UITool\obj\Debug\UITool.csproj.CoreCompileInputs.cache
+F:\Repositories\build\CSV2DBConverter\UI\UITool.exe.config
+F:\Repositories\build\CSV2DBConverter\UI\UITool.exe
+F:\Repositories\build\CSV2DBConverter\UI\UITool.pdb
+F:\Repositories\CSV2DBConverter\UITool\obj\Debug\UITool.csproj.CopyComplete
+F:\Repositories\CSV2DBConverter\UITool\obj\Debug\UITool.exe
+F:\Repositories\CSV2DBConverter\UITool\obj\Debug\UITool.pdb
