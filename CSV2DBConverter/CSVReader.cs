@@ -1,4 +1,5 @@
 ﻿using CSV2DBConverter.Adapter;
+using System.Linq;
 
 namespace CSV2DBConverter
 {
@@ -8,13 +9,12 @@ namespace CSV2DBConverter
         string[] Table { get; }
         string[] Body { get; }
 
-        void Analyze();
+        void Analyze(int headLineEnd, int tableLine);
     }
 
     public class CSVReader : ICSVReader
     {
         private readonly string path;
-        private readonly string seperator;
         private readonly IFileReader fileReader;
         private string[] file;
 
@@ -24,17 +24,18 @@ namespace CSV2DBConverter
 
         public CSVReader(
             string path, 
-            string seperator,
             IFileReader fileReader)
         {
             this.path = path;
-            this.seperator = seperator;
             this.fileReader = fileReader;
         }
 
-        public void Analyze()
+        public void Analyze(int headLineEnd, int tableLine)
         {
             file = fileReader.Read(path);
+            Head = file.Take(headLineEnd + 1).ToArray();
+            Table = file.Skip(headLineEnd + 1).Take(1).ToArray();
+            Body = file.Skip(tableLine + 1).ToArray();
         }
     }
 }
