@@ -5,7 +5,9 @@ VisualStudioVersion = 15.0.28307.1062
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSV2DBConverter", "CSV2DBConverter\CSV2DBConverter.csproj", "{AE84BC95-65BD-4564-A530-4AE9991B1B95}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSV2DBConverterTests", "CSV2DBConverterTests\CSV2DBConverterTests.csproj", "{970FA43E-EE4F-4069-AA2D-538AA9AE5003}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSV2DBConverterTests", "CSV2DBConverterTests\CSV2DBConverterTests.csproj", "{970FA43E-EE4F-4069-AA2D-538AA9AE5003}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITool", "UITool\UITool.csproj", "{5A80B4C6-2807-41D9-B7A3-BCC320D1ABD9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{970FA43E-EE4F-4069-AA2D-538AA9AE5003}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{970FA43E-EE4F-4069-AA2D-538AA9AE5003}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{970FA43E-EE4F-4069-AA2D-538AA9AE5003}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A80B4C6-2807-41D9-B7A3-BCC320D1ABD9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A80B4C6-2807-41D9-B7A3-BCC320D1ABD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A80B4C6-2807-41D9-B7A3-BCC320D1ABD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A80B4C6-2807-41D9-B7A3-BCC320D1ABD9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

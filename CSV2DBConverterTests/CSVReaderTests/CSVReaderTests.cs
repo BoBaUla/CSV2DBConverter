@@ -66,14 +66,14 @@ namespace CSVReaderTests
            [Test]
            public void ReadsFile()
             {
-                _cut.Analyze(0,0);
+                _cut.Analyze(0);
                 _fileReaderMock.Verify(m => m.Read(_path));
             }
 
             [Test]
             public void InitializesHead()
             {
-                _cut.Analyze(_endOfHeadLine, 0);
+                _cut.Analyze(_tableLine);
 
                 var head = _cut.Head;
 
@@ -82,13 +82,13 @@ namespace CSVReaderTests
                     Assert.AreEqual(_file[i], head[i]);
                 }
 
-                Assert.True(head.Last() == _endOfHeadlineIdentifier, "letzter Eintrag falsch");
+                Assert.AreEqual(_endOfHeadlineIdentifier, head.Last() ,"letzter Eintrag falsch");
             }
 
             [Test]
             public void InitializesTable()
             {
-                _cut.Analyze(_endOfHeadLine, _tableLine);
+                _cut.Analyze(_tableLine);
 
                 var table = _cut.Table;
 
@@ -99,7 +99,7 @@ namespace CSVReaderTests
             [Test]
             public void InitializesBody()
             {
-                _cut.Analyze(_endOfHeadLine, _tableLine);
+                _cut.Analyze(_tableLine);
 
                 var body = _cut.Body;
 

@@ -9,7 +9,7 @@ namespace CSV2DBConverter
         string[] Table { get; }
         string[] Body { get; }
 
-        void Analyze(int headLineEnd, int tableLine);
+        void Analyze(int tableLine);
     }
 
     public class CSVReader : ICSVReader
@@ -30,11 +30,11 @@ namespace CSV2DBConverter
             this.fileReader = fileReader;
         }
 
-        public void Analyze(int headLineEnd, int tableLine)
+        public void Analyze(int tableLine)
         {
             file = fileReader.Read(path);
-            Head = file.Take(headLineEnd + 1).ToArray();
-            Table = file.Skip(headLineEnd + 1).Take(1).ToArray();
+            Head = file.Take(tableLine).ToArray();
+            Table = file.Skip(tableLine).Take(1).ToArray();
             Body = file.Skip(tableLine + 1).ToArray();
         }
     }
