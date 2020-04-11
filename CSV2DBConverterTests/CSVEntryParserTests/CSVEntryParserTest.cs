@@ -9,7 +9,7 @@ using System.Linq;
 namespace CSV2DBConverterTests.TableEntryParserTests
 {
     [TestFixture]
-    public class TableEntryParserTests
+    public class CSVEntryParserTests
     {
         string _path = "somePath";
         string _separator = ";";
@@ -19,7 +19,7 @@ namespace CSV2DBConverterTests.TableEntryParserTests
         int _tableLine;
 
         Mock<IFileReader> _fileReaderMock;
-        ITableEntryParser _cut;
+        ICSVEntryParser _cut;
         ICSVReader _csvReader;
         string[] _file;
 
@@ -35,7 +35,7 @@ namespace CSV2DBConverterTests.TableEntryParserTests
 
             _csvReader = new CSVReader(_path, _fileReaderMock.Object);
 
-            _cut = new TableEntryParser(
+            _cut = new CSVEntryParser(
                 _path,
                 _tableLine,
                 _csvReader);
@@ -66,7 +66,7 @@ namespace CSV2DBConverterTests.TableEntryParserTests
         }
 
         [TestFixture]
-        public class Initialize : TableEntryParserTests
+        public class Initialize : CSVEntryParserTests
         {
             [Test]
             public void ReadsFile()
@@ -77,7 +77,7 @@ namespace CSV2DBConverterTests.TableEntryParserTests
         }
 
         [TestFixture]
-        public class GetTableEntry: TableEntryParserTests
+        public class GetTableEntry: CSVEntryParserTests
         {
             [Test]
             public void ReturnsCorrectCount()

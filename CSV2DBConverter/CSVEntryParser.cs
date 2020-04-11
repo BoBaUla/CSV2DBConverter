@@ -4,21 +4,21 @@ using System.Linq;
 namespace CSV2DBConverter
 {
 
-    public interface ITableEntryParser
+    public interface ICSVEntryParser
     {
-        List<TableRow> TableEntries { get; }
+        List<CSVRow> TableEntries { get; }
         void Initialize();
     }
 
-    public class TableEntryParser : ITableEntryParser
+    public class CSVEntryParser : ICSVEntryParser
     {
         private readonly string path;
         private readonly int tableLine;
         private readonly ICSVReader cSVReader;
 
-        public List<TableRow> TableEntries { get; private set; }
+        public List<CSVRow> TableEntries { get; private set; }
 
-        public TableEntryParser(
+        public CSVEntryParser(
             string path, 
             int tableLine,
             ICSVReader cSVReader)
@@ -30,13 +30,13 @@ namespace CSV2DBConverter
 
         public void Initialize()
         {
-            TableEntries = new List<TableRow>();
+            TableEntries = new List<CSVRow>();
             cSVReader.Analyze(tableLine);
             var table = cSVReader.Table.First().Split(';');
             foreach (var line in cSVReader.Body)
             {
                 var lineValues = line.Split(';');
-                var tableRow = new TableRow();
+                var tableRow = new CSVRow();
                 tableRow.Fill(table, lineValues);
                 TableEntries.Add(tableRow);
             }

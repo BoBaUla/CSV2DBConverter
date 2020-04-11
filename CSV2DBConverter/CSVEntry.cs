@@ -3,21 +3,21 @@ using System.Collections.Generic;
 
 namespace CSV2DBConverter
 {
-    public struct STableEntry
+    public struct SCSVEntry
     {
         public string Key;
         public string Value;
     }
 
-    public interface ITableRow
+    public interface ICSVRow
     {
-        List<STableEntry> Row { get; }
+        List<SCSVEntry> Row { get; }
         void Fill(string[] tablePattern, string[] line);
     }
 
-    public class TableRow: ITableRow
+    public class CSVRow: ICSVRow
     {
-        public List<STableEntry> Row { get; private set; } = new List<STableEntry>();
+        public List<SCSVEntry> Row { get; private set; } = new List<SCSVEntry>();
 
         public void Fill(string[] tablePattern, string[] line)
         {
@@ -28,7 +28,7 @@ namespace CSV2DBConverter
 
             for(var i = 0; i < tablePattern.Length; i++)
             {
-                Row.Add(new STableEntry()
+                Row.Add(new SCSVEntry()
                 {
                     Key = tablePattern[i],
                     Value = line[i]
