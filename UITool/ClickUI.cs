@@ -18,11 +18,18 @@ namespace UITool
     {
         CSVReader _CSVReader;
         IFileReader _fileReader;
+        IDBConnectionString _connectionString;
+        string path = Directory.GetCurrentDirectory();
+        string name = "Test.db";
+
         public ClickUI()
         {
             InitializeComponent();
             _fileReader = new FileReader();
             _CSVReader = new CSVReader(tbCSVPath.Text, _fileReader);
+
+            _connectionString = new DBConncetionString(name, path);
+
         }
 
         private void btnCSVPath_Click(object sender, EventArgs e)
@@ -78,11 +85,7 @@ namespace UITool
 
         private void CreateDB_Click(object sender, EventArgs e)
         {
-            var path = Directory.GetCurrentDirectory();
-            var name = "Test.db";
-            var dbConncetionString = new DBConncetionString(name, path);
-
-            var dbCreator = new DBCreator(dbConncetionString);
+            var dbCreator = new DBCreator(_connectionString);
             dbCreator.Create();
             var file = Path.Combine(path, name);
             var fileExists = File.Exists(file);
@@ -93,6 +96,13 @@ namespace UITool
                 File.Delete(file);
 
             rtbOutput.AppendText($"\nFile deleted: {!File.Exists(file) }");
+        }
+
+        private void btnCreateTable_Click(object sender, EventArgs e)
+        {
+            var dbTableCreator = new DBTableCreator(_connectionString, new string[]{"col1", "col2" }, "testName");
+            dbTableCreator.Create();
+
         }
     }
 }

@@ -36,6 +36,7 @@
             this.tbCSVPath = new System.Windows.Forms.TextBox();
             this.tbTableLine = new System.Windows.Forms.TextBox();
             this.CreateDB = new System.Windows.Forms.Button();
+            this.btnCreateTable = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnCSVPath
@@ -110,11 +111,22 @@
             this.CreateDB.UseVisualStyleBackColor = true;
             this.CreateDB.Click += new System.EventHandler(this.CreateDB_Click);
             // 
+            // btnCreateTable
+            // 
+            this.btnCreateTable.Location = new System.Drawing.Point(12, 228);
+            this.btnCreateTable.Name = "btnCreateTable";
+            this.btnCreateTable.Size = new System.Drawing.Size(115, 23);
+            this.btnCreateTable.TabIndex = 9;
+            this.btnCreateTable.Text = "CreateTable";
+            this.btnCreateTable.UseVisualStyleBackColor = true;
+            this.btnCreateTable.Click += new System.EventHandler(this.btnCreateTable_Click);
+            // 
             // ClickUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnCreateTable);
             this.Controls.Add(this.CreateDB);
             this.Controls.Add(this.tbTableLine);
             this.Controls.Add(this.tbCSVPath);
@@ -140,6 +152,7 @@
         private System.Windows.Forms.TextBox tbCSVPath;
         private System.Windows.Forms.TextBox tbTableLine;
         private System.Windows.Forms.Button CreateDB;
+        private System.Windows.Forms.Button btnCreateTable;
     }
 }
 
