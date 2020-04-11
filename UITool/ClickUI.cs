@@ -4,11 +4,8 @@ using CSV2DBConverter.DBHandling;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -22,6 +19,9 @@ namespace UITool
         string path = Directory.GetCurrentDirectory();
         string name = "Test.db";
 
+        BackgroundWorker _backgroundWorker;
+        List<Task> _runningTasks;
+
         public ClickUI()
         {
             InitializeComponent();
@@ -29,6 +29,37 @@ namespace UITool
             _CSVReader = new CSVReader(tbCSVPath.Text, _fileReader);
 
             _connectionString = new DBConncetionString(name, path);
+
+            _runningTasks = new List<Task>();
+
+            _backgroundWorker = new BackgroundWorker();
+            _backgroundWorker.RunWorkerAsync();
+            _backgroundWorker.DoWork += _backgroundWorker_DoWork;
+            _backgroundWorker.RunWorkerCompleted += _backgroundWorker_RunWorkerCompleted;
+        }
+
+        private void _backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            var restart = false;
+            foreach(var task in _runningTasks)
+            {
+                btnCSV2DB.Enabled = task.IsCompleted;
+                restart = !task.IsCompleted;
+            }
+
+            if (restart)
+                _backgroundWorker.RunWorkerAsync();
+            else
+                _runningTasks = new List<Task>();
+        }
+
+        private void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            Thread.Sleep(1000);
+        }
+
+        private void ClickUI_Load(object sender, EventArgs e)
+        {
 
         }
 
@@ -102,7 +133,71 @@ namespace UITool
         {
             var dbTableCreator = new DBTableCreator(_connectionString, new string[]{"col1", "col2" }, "testName");
             dbTableCreator.Create();
+        }
 
+        private void btnInsertTable_Click(object sender, EventArgs e)
+        {
+            var tablePattern = new string[] { "col1", "col2" };
+            var tableName = "testName";
+            var dbTableCreator = new DBTableCreator(
+                _connectionString, 
+                tablePattern,
+                tableName);
+
+            var csvRow = new CSVRow();
+            csvRow.Fill(tablePattern, new string[] { "Val1", "2"});
+                
+            dbTableCreator.Create();
+            var dbInsertCommand = new InsertCommand(
+                _connectionString,
+                tableName,
+                csvRow);
+            dbInsertCommand.Insert();
+            dbInsertCommand.Insert();
+        }
+
+        private void btnCSV2DB_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(tbCSVPath.Text) ||
+                string.IsNullOrEmpty(tbTableLine.Text))
+            {
+                return;
+            }
+
+            var csvReader = new CSVReader(tbCSVPath.Text, _fileReader);
+
+            var csvEntryParser = new CSVEntryParser(
+                tbCSVPath.Text,
+                int.Parse(tbTableLine.Text),
+                csvReader,
+                new string[] { "Währung" });
+
+            csvEntryParser.Initialize();
+            var tablePattern = csvEntryParser.TablePattern;
+            var entries = csvEntryParser.TableEntries;
+
+            var tableName = "testName";
+            var dbTableCreator = new DBTableCreator(
+                _connectionString,
+                tablePattern,
+                tableName);
+            dbTableCreator.Create();
+
+            var fillDBTask = Task.Run(() => FillDB(entries, tableName));
+            _runningTasks.Add(fillDBTask);
+            _backgroundWorker.RunWorkerAsync();
+        }
+
+        private void FillDB(List<CSVRow> entries,  string tableName)
+        {
+            foreach (var csvRow in entries)
+            {
+                var dbInsertCommand = new InsertCommand(
+                    _connectionString,
+                    tableName,
+                    csvRow);
+                dbInsertCommand.Insert();
+            }
         }
     }
 }

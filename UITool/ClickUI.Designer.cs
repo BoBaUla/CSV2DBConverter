@@ -37,6 +37,8 @@
             this.tbTableLine = new System.Windows.Forms.TextBox();
             this.CreateDB = new System.Windows.Forms.Button();
             this.btnCreateTable = new System.Windows.Forms.Button();
+            this.btnInsertTable = new System.Windows.Forms.Button();
+            this.btnCSV2DB = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnCSVPath
@@ -121,11 +123,33 @@
             this.btnCreateTable.UseVisualStyleBackColor = true;
             this.btnCreateTable.Click += new System.EventHandler(this.btnCreateTable_Click);
             // 
+            // btnInsertTable
+            // 
+            this.btnInsertTable.Location = new System.Drawing.Point(12, 257);
+            this.btnInsertTable.Name = "btnInsertTable";
+            this.btnInsertTable.Size = new System.Drawing.Size(115, 23);
+            this.btnInsertTable.TabIndex = 10;
+            this.btnInsertTable.Text = "InsertTable";
+            this.btnInsertTable.UseVisualStyleBackColor = true;
+            this.btnInsertTable.Click += new System.EventHandler(this.btnInsertTable_Click);
+            // 
+            // btnCSV2DB
+            // 
+            this.btnCSV2DB.Location = new System.Drawing.Point(12, 286);
+            this.btnCSV2DB.Name = "btnCSV2DB";
+            this.btnCSV2DB.Size = new System.Drawing.Size(115, 23);
+            this.btnCSV2DB.TabIndex = 11;
+            this.btnCSV2DB.Text = "CSV2DB";
+            this.btnCSV2DB.UseVisualStyleBackColor = true;
+            this.btnCSV2DB.Click += new System.EventHandler(this.btnCSV2DB_Click);
+            // 
             // ClickUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnCSV2DB);
+            this.Controls.Add(this.btnInsertTable);
             this.Controls.Add(this.btnCreateTable);
             this.Controls.Add(this.CreateDB);
             this.Controls.Add(this.tbTableLine);
@@ -137,6 +161,7 @@
             this.Controls.Add(this.btnCSVPath);
             this.Name = "ClickUI";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.ClickUI_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -153,6 +178,8 @@
         private System.Windows.Forms.TextBox tbTableLine;
         private System.Windows.Forms.Button CreateDB;
         private System.Windows.Forms.Button btnCreateTable;
+        private System.Windows.Forms.Button btnInsertTable;
+        private System.Windows.Forms.Button btnCSV2DB;
     }
 }
 
