@@ -40,16 +40,28 @@ namespace CSV2DBConverter
             cSVReader.Analyze(tableLine);
             var table = cSVReader.Table.First().Split(';');
             var indizesToSkip = FilterColumnsToSkip(table);
-            TablePattern = SelectWithoutSkipedValues(indizesToSkip, table);
-            
+
+            TablePattern = SelectTablePatternWithoutSkipedValues(indizesToSkip, table);
+            TableEntries = SelectTableEntriesWithoutSkippedValues(indizesToSkip);
+        }
+
+        private List<CSVRow> SelectTableEntriesWithoutSkippedValues(List<int> indizesToSkip)
+        {
+            var csvRowList = new List<CSVRow>();
+
             foreach (var line in cSVReader.Body)
             {
                 var lineValues = line.Split(';');
                 var tableRow = new CSVRow();
-                var filteredLineValues = SelectWithoutSkipedValues(indizesToSkip, lineValues);
+
+                var filteredLineValues = SelectTablePatternWithoutSkipedValues(indizesToSkip, lineValues);
+
                 tableRow.Fill(TablePattern.ToArray(), filteredLineValues.ToArray());
-                TableEntries.Add(tableRow);
+
+                csvRowList.Add(tableRow);
             }
+
+            return csvRowList;
         }
 
         private List<int> FilterColumnsToSkip(string[] columns)
@@ -65,7 +77,7 @@ namespace CSV2DBConverter
             return indizes;
         }
 
-        private List<string> SelectWithoutSkipedValues(List<int> skipedIndizes, string[] entries)
+        private List<string> SelectTablePatternWithoutSkipedValues(List<int> skipedIndizes, string[] entries)
         {
             var filteredEntries = new List<string>();
 
