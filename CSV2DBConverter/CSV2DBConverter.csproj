@@ -45,10 +45,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapter\FileReader.cs" />
-    <Compile Include="CSVReader.cs" />
+    <Compile Include="CSVHandling\CSVReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CSVEntryParser.cs" />
-    <Compile Include="CSVEntry.cs" />
+    <Compile Include="CSVHandling\CSVEntryParser.cs" />
+    <Compile Include="CSVHandling\CSVEntry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
