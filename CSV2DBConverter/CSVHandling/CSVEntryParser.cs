@@ -41,8 +41,15 @@ namespace CSV2DBConverter
             var table = cSVReader.Table.First().Split(';');
             var indizesToSkip = FilterColumnsToSkip(table);
 
-            TablePattern = SelectTablePatternWithoutSkipedValues(indizesToSkip, table);
+            TablePattern = SelectRowEntriesWithoutSkipedValues(indizesToSkip, table);
             TableEntries = SelectTableEntriesWithoutSkippedValues(indizesToSkip);
+        }
+
+
+
+        private string FilterInvalidCharacters(string value)
+        {
+            return value.Replace("/", "_").Replace("'","''");
         }
 
         private List<CSVRow> SelectTableEntriesWithoutSkippedValues(List<int> indizesToSkip)
@@ -54,7 +61,7 @@ namespace CSV2DBConverter
                 var lineValues = line.Split(';');
                 var tableRow = new CSVRow();
 
-                var filteredLineValues = SelectTablePatternWithoutSkipedValues(indizesToSkip, lineValues);
+                var filteredLineValues = SelectRowEntriesWithoutSkipedValues(indizesToSkip, lineValues);
 
                 tableRow.Fill(TablePattern.ToArray(), filteredLineValues.ToArray());
 
@@ -64,20 +71,7 @@ namespace CSV2DBConverter
             return csvRowList;
         }
 
-        private List<int> FilterColumnsToSkip(string[] columns)
-        {
-            var indizes = new List<int>();
-            for(var i = 0; i < columns.Length; i++)
-            {
-                if(columsToSkip.Contains(columns[i]))
-                {
-                    indizes.Add(i);
-                }
-            }
-            return indizes;
-        }
-
-        private List<string> SelectTablePatternWithoutSkipedValues(List<int> skipedIndizes, string[] entries)
+        private List<string> SelectRowEntriesWithoutSkipedValues(List<int> skipedIndizes, string[] entries)
         {
             var filteredEntries = new List<string>();
 
@@ -85,10 +79,25 @@ namespace CSV2DBConverter
             {
                 if(!skipedIndizes.Contains(i))
                 {
-                    filteredEntries.Add(entries[i]);
+                    filteredEntries.Add(FilterInvalidCharacters(entries[i]));
                 }
             }
             return filteredEntries;
         }
+
+        private List<int> FilterColumnsToSkip(string[] columns)
+        {
+            var indizes = new List<int>();
+            for (var i = 0; i < columns.Length; i++)
+            {
+                if (columsToSkip.Contains(columns[i]))
+                {
+                    indizes.Add(i);
+                }
+            }
+            return indizes;
+        }
+
+
     }
 }
