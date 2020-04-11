@@ -22,6 +22,7 @@ namespace CSV2DBConverterTests.TableEntryParserTests
         ICSVEntryParser _cut;
         ICSVReader _csvReader;
         string[] _file;
+        string[] _columnsToSkip;
 
         [SetUp]
         public void Setup()
@@ -34,11 +35,12 @@ namespace CSV2DBConverterTests.TableEntryParserTests
             _fileReaderMock.Setup(m => m.Read(_path)).Returns(_file);
 
             _csvReader = new CSVReader(_path, _fileReaderMock.Object);
-
+            _columnsToSkip = new string[] { };
             _cut = new CSVEntryParser(
                 _path,
                 _tableLine,
-                _csvReader);
+                _csvReader,
+                _columnsToSkip);
         }
 
         private int GetEndOfHeadline()
@@ -101,6 +103,46 @@ namespace CSV2DBConverterTests.TableEntryParserTests
                     Assert.AreEqual(table[i], result.Row[i].Key);
                     Assert.AreEqual(last[i], result.Row[i].Value);
                 }
+            }
+
+            [Test]
+            public void SkipsCertainColumn()
+            {
+                _columnsToSkip = new string[] { "tableLine2" };
+                _cut = new CSVEntryParser(
+                _path,
+                _tableLine,
+                _csvReader,
+                _columnsToSkip);
+
+                _cut.Initialize();
+
+                var table = _cut.TablePattern;
+
+                Assert.IsFalse(table.Contains(_columnsToSkip.First()));
+            }
+
+            [Test]
+            public void SkipsCertainColumnIfTheyAreDuplicated()
+            {
+                _columnsToSkip = new string[] { "tableLine2" };
+                _file = CSVDummy.SetupFileDuplicatedEntries(
+                    _separator,
+                    _endOfHeadlineIdentifier,
+                    _tableLineIdentifier);
+                _fileReaderMock.Setup(m => m.Read(_path)).Returns(_file);
+
+                _cut = new CSVEntryParser(
+                _path,
+                _tableLine,
+                _csvReader,
+                _columnsToSkip);
+
+                _cut.Initialize();
+
+                var table = _cut.TablePattern;
+                Assert.AreEqual(_file.Count() - _tableLine - _columnsToSkip.Count() -1, table.Count());
+                Assert.IsFalse(table.Contains(_columnsToSkip.First()));
             }
         }
 

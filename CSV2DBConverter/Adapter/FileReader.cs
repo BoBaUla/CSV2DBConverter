@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 
 namespace CSV2DBConverter.Adapter
 {
@@ -11,7 +12,7 @@ namespace CSV2DBConverter.Adapter
     {
         public string[] Read(string path)
         {
-            return File.ReadAllLines(path);
+            return File.ReadAllLines(path, Encoding.Default);
         }
     }
 }
