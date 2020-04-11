@@ -1,4 +1,4 @@
-﻿
+﻿using System.Collections.Generic;
 using System.Data.SQLite;
 
 namespace CSV2DBConverter.DBHandling
@@ -11,12 +11,12 @@ namespace CSV2DBConverter.DBHandling
     public class DBTableCreator: IDBTableCreator
     {
         private readonly IDBConnectionString connectionString;
-        private readonly string[] tablePattern;
+        private readonly IList<string> tablePattern;
         private readonly string tableName;
 
         public DBTableCreator(
             IDBConnectionString connectionString,
-            string[] tablePattern,
+            IList<string> tablePattern,
             string name)
         {
             this.connectionString = connectionString;
@@ -49,5 +49,8 @@ namespace CSV2DBConverter.DBHandling
             createTableStatment += ");";
             return createTableStatment;
         }
+
     }
+
+    
 }
