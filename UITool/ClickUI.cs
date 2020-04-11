@@ -1,10 +1,12 @@
 ﻿using CSV2DBConverter;
 using CSV2DBConverter.Adapter;
+using CSV2DBConverter.DBHandling;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +14,11 @@ using System.Windows.Forms;
 
 namespace UITool
 {
-    public partial class Form1 : Form
+    public partial class ClickUI : Form
     {
         CSVReader _CSVReader;
         IFileReader _fileReader;
-        public Form1()
+        public ClickUI()
         {
             InitializeComponent();
             _fileReader = new FileReader();
@@ -74,5 +76,23 @@ namespace UITool
             }
         }
 
+        private void CreateDB_Click(object sender, EventArgs e)
+        {
+            var path = Directory.GetCurrentDirectory();
+            var name = "Test.db";
+            var dbConncetionString = new DBConncetionString(name, path);
+
+            var dbCreator = new DBCreator(dbConncetionString);
+            dbCreator.Create();
+            var file = Path.Combine(path, name);
+            var fileExists = File.Exists(file);
+
+            rtbOutput.Clear();
+            rtbOutput.Text = "DB created: " + fileExists.ToString();
+            if (fileExists)
+                File.Delete(file);
+
+            rtbOutput.AppendText($"\nFile deleted: {!File.Exists(file) }");
+        }
     }
 }

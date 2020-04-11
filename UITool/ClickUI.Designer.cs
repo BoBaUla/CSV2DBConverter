@@ -1,6 +1,6 @@
 ﻿namespace UITool
 {
-    partial class Form1
+    partial class ClickUI
     {
         /// <summary>
         /// Erforderliche Designervariable.
@@ -35,6 +35,7 @@
             this.rtbOutput = new System.Windows.Forms.RichTextBox();
             this.tbCSVPath = new System.Windows.Forms.TextBox();
             this.tbTableLine = new System.Windows.Forms.TextBox();
+            this.CreateDB = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnCSVPath
@@ -99,11 +100,22 @@
             this.tbTableLine.Size = new System.Drawing.Size(54, 22);
             this.tbTableLine.TabIndex = 7;
             // 
-            // Form1
+            // CreateDB
+            // 
+            this.CreateDB.Location = new System.Drawing.Point(12, 199);
+            this.CreateDB.Name = "CreateDB";
+            this.CreateDB.Size = new System.Drawing.Size(115, 23);
+            this.CreateDB.TabIndex = 8;
+            this.CreateDB.Text = "CreateDB";
+            this.CreateDB.UseVisualStyleBackColor = true;
+            this.CreateDB.Click += new System.EventHandler(this.CreateDB_Click);
+            // 
+            // ClickUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.CreateDB);
             this.Controls.Add(this.tbTableLine);
             this.Controls.Add(this.tbCSVPath);
             this.Controls.Add(this.rtbOutput);
@@ -111,7 +123,7 @@
             this.Controls.Add(this.btnReadTable);
             this.Controls.Add(this.btnReadHead);
             this.Controls.Add(this.btnCSVPath);
-            this.Name = "Form1";
+            this.Name = "ClickUI";
             this.Text = "Form1";
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -127,6 +139,7 @@
         private System.Windows.Forms.RichTextBox rtbOutput;
         private System.Windows.Forms.TextBox tbCSVPath;
         private System.Windows.Forms.TextBox tbTableLine;
+        private System.Windows.Forms.Button CreateDB;
     }
 }
 
