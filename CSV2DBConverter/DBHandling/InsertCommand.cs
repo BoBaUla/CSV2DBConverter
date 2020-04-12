@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using CSV2DBConverter.CSVHandling;
+using System.Data.SQLite;
 
 namespace CSV2DBConverter.DBHandling
 {

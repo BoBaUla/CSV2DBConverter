@@ -1,13 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using CSV2DBConverter.CSVHandling;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace CSV2DBConverter
+namespace CSV2DBConverter.CSVHandling
 {
 
     public interface ICSVEntryParser
     {
         List<CSVRow> TableEntries { get; }
-        List<string> TablePattern { get; }
+        List<CSVTableAttribute> TablePattern { get; }
         void Initialize();
     }
 
@@ -20,7 +21,7 @@ namespace CSV2DBConverter
 
         public List<CSVRow> TableEntries { get; private set; }
 
-        public List<string> TablePattern { get; private set; }
+        public List<CSVTableAttribute> TablePattern { get; private set; }
 
     public CSVEntryParser(
             string path, 
@@ -61,9 +62,9 @@ namespace CSV2DBConverter
                 var lineValues = line.Split(';');
                 var tableRow = new CSVRow();
 
-                var filteredLineValues = SelectRowEntriesWithoutSkipedValues(indizesToSkip, lineValues);
+                var filteredLineValues = SelectRowEntriesWithoutSkipedValues(indizesToSkip, lineValues).Select(m => m.AttributeName);
 
-                tableRow.Fill(TablePattern.ToArray(), filteredLineValues.ToArray());
+                tableRow.Fill(TablePattern, filteredLineValues.ToArray());
 
                 csvRowList.Add(tableRow);
             }
@@ -71,15 +72,19 @@ namespace CSV2DBConverter
             return csvRowList;
         }
 
-        private List<string> SelectRowEntriesWithoutSkipedValues(List<int> skipedIndizes, string[] entries)
+        private List<CSVTableAttribute> SelectRowEntriesWithoutSkipedValues(List<int> skipedIndizes, string[] entries)
         {
-            var filteredEntries = new List<string>();
+            var filteredEntries = new List<CSVTableAttribute>();
 
             for(var i =0; i <entries.Length; i++)
             {
                 if(!skipedIndizes.Contains(i))
                 {
-                    filteredEntries.Add(FilterInvalidCharacters(entries[i]));
+                    filteredEntries.Add(new CSVTableAttribute
+                    {
+                        AttributeName = FilterInvalidCharacters(entries[i]),
+                        IsForeignKey = false
+                    });                        
                 }
             }
             return filteredEntries;

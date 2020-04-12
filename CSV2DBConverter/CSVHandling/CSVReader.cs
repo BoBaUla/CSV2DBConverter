@@ -1,8 +1,7 @@
 ﻿using CSV2DBConverter.Adapter;
-using System.Collections.Generic;
 using System.Linq;
 
-namespace CSV2DBConverter
+namespace CSV2DBConverter.CSVHandling
 {
     public interface ICSVReader
     {

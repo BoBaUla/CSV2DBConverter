@@ -1,5 +1,6 @@
 ﻿using CSV2DBConverter;
 using CSV2DBConverter.Adapter;
+using CSV2DBConverter.CSVHandling;
 using CSVReaderTests;
 using Moq;
 using NUnit.Framework;
@@ -119,7 +120,7 @@ namespace CSV2DBConverterTests.TableEntryParserTests
 
                 var table = _cut.TablePattern;
 
-                Assert.IsFalse(table.Contains(_columnsToSkip.First()));
+                Assert.IsFalse(table.Select(m => m.AttributeName).Contains(_columnsToSkip.First()));
             }
 
             [Test]
@@ -142,7 +143,7 @@ namespace CSV2DBConverterTests.TableEntryParserTests
 
                 var table = _cut.TablePattern;
                 Assert.AreEqual(_file.Count() - _tableLine - _columnsToSkip.Count() -1, table.Count());
-                Assert.IsFalse(table.Contains(_columnsToSkip.First()));
+                Assert.IsFalse(table.Select(m => m.AttributeName).Contains(_columnsToSkip.First()));
             }
         }
 

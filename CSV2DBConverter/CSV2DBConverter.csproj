@@ -62,13 +62,14 @@
   <ItemGroup>
     <Compile Include="Adapter\FileReader.cs" />
     <Compile Include="CSVHandling\CSVReader.cs" />
+    <Compile Include="CSVHandling\CSVTableAttribute.cs" />
     <Compile Include="DBHandling\DBConncetionString.cs" />
     <Compile Include="DBHandling\DBCreator.cs" />
     <Compile Include="DBHandling\DBTableCreator.cs" />
     <Compile Include="DBHandling\InsertCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="CSVHandling\CSVEntryParser.cs" />
-    <Compile Include="CSVHandling\CSVEntry.cs" />
+    <Compile Include="CSVHandling\CSVRow.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

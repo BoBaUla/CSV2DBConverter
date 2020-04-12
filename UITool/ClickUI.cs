@@ -1,10 +1,12 @@
 ﻿using CSV2DBConverter;
 using CSV2DBConverter.Adapter;
+using CSV2DBConverter.CSVHandling;
 using CSV2DBConverter.DBHandling;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -137,11 +139,19 @@ namespace UITool
 
         private void btnInsertTable_Click(object sender, EventArgs e)
         {
-            var tablePattern = new string[] { "col1", "col2" };
+            var tablePattern = new List<CSVTableAttribute>
+            {
+                new CSVTableAttribute{
+                    AttributeName ="col1"
+                },
+                new CSVTableAttribute{
+                    AttributeName ="col2"
+                }
+            };
             var tableName = "testName";
             var dbTableCreator = new DBTableCreator(
                 _connectionString, 
-                tablePattern,
+                tablePattern.Select(m=> m.AttributeName).ToList(),
                 tableName);
 
             var csvRow = new CSVRow();
@@ -169,7 +179,9 @@ namespace UITool
             csvEntryParser.Initialize();
 
             var tableName = "testName";
-            var dbTableCreator = CreateDBTableCreator(csvEntryParser.TablePattern, tableName);
+            var dbTableCreator = CreateDBTableCreator(
+                csvEntryParser.TablePattern.Select(m => m.AttributeName).ToList(),
+                tableName);
 
             dbTableCreator.Create();
 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CSV2DBConverter
+namespace CSV2DBConverter.CSVHandling
 {
     public struct SCSVEntry
     {
@@ -12,25 +12,25 @@ namespace CSV2DBConverter
     public interface ICSVRow
     {
         List<SCSVEntry> Row { get; }
-        void Fill(string[] tablePattern, string[] line);
+        void Fill(List<CSVTableAttribute> tablePattern, string[] line);
     }
 
     public class CSVRow: ICSVRow
     {
         public List<SCSVEntry> Row { get; private set; } = new List<SCSVEntry>();
 
-        public void Fill(string[] tablePattern, string[] line)
+        public void Fill(List<CSVTableAttribute> tablePattern, string[] line)
         {
-            if(tablePattern.Length != line.Length )
+            if(tablePattern.Count != line.Length )
             {
                 throw new WrongPatternException();
             }
 
-            for(var i = 0; i < tablePattern.Length; i++)
+            for(var i = 0; i < tablePattern.Count; i++)
             {
                 Row.Add(new SCSVEntry()
                 {
-                    Key = tablePattern[i],
+                    Key = tablePattern[i].AttributeName,
                     Value = line[i]
                 });
             }
