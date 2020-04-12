@@ -164,28 +164,43 @@ namespace UITool
                 return;
             }
 
-            var csvReader = new CSVReader(tbCSVPath.Text, _fileReader);
+            CSVEntryParser csvEntryParser = CreateCSVEntryParser();
 
-            var csvEntryParser = new CSVEntryParser(
+            csvEntryParser.Initialize();
+
+            var tableName = "testName";
+            var dbTableCreator = CreateDBTableCreator(csvEntryParser.TablePattern, tableName);
+
+            dbTableCreator.Create();
+
+            var fillDBTask = Task.Run(() => FillDB(csvEntryParser.TableEntries, tableName));
+
+            _runningTasks.Add(fillDBTask);
+            _backgroundWorker.RunWorkerAsync();
+        }
+
+        #region extracted methods
+        private DBTableCreator CreateDBTableCreator(List<string> tablePattern, string tableName)
+        {
+            return new DBTableCreator(
+                _connectionString,
+                tablePattern,
+                tableName);
+        }
+
+        private CSVReader CrearteCSVReader()
+        {
+            return new CSVReader(tbCSVPath.Text, _fileReader);
+        }
+
+        private CSVEntryParser CreateCSVEntryParser()
+        {
+            CSVReader csvReader = CrearteCSVReader();
+            return new CSVEntryParser(
                 tbCSVPath.Text,
                 int.Parse(tbTableLine.Text),
                 csvReader,
                 new string[] { "Währung" });
-
-            csvEntryParser.Initialize();
-            var tablePattern = csvEntryParser.TablePattern;
-            var entries = csvEntryParser.TableEntries;
-
-            var tableName = "testName";
-            var dbTableCreator = new DBTableCreator(
-                _connectionString,
-                tablePattern,
-                tableName);
-            dbTableCreator.Create();
-
-            var fillDBTask = Task.Run(() => FillDB(entries, tableName));
-            _runningTasks.Add(fillDBTask);
-            _backgroundWorker.RunWorkerAsync();
         }
 
         private void FillDB(List<CSVRow> entries,  string tableName)
@@ -199,5 +214,6 @@ namespace UITool
                 dbInsertCommand.Insert();
             }
         }
+        #endregion
     }
 }
