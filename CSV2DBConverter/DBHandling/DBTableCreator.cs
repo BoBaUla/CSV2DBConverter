@@ -1,6 +1,7 @@
 ﻿using CSV2DBConverter.CSVHandling;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 
 namespace CSV2DBConverter.DBHandling
 {
@@ -40,21 +41,7 @@ namespace CSV2DBConverter.DBHandling
         
         public void CreateWithForeignKeys(List<ForeignKey> keyList)
         {
-            CreateInternal(CreateSQLSTatementWithForeignKey(keyList));
-        }
-
-        private string CreateSQLSTatementWithForeignKey(List<ForeignKey> keyList)
-        {
-            var createTableStatement = CreateSQLStatement();
-            foreach (var key in keyList)
-            {
-                createTableStatement += $", {key.Key} integer ";
-            }
-            foreach (var key in keyList)
-            {
-                createTableStatement += $", FOREIGN KEY({key.Key}) REFERENCES {key.Table}({key.TableID})";
-            }
-            return createTableStatement;
+            CreateInternal(CreateSQLStatementWithForeignKey(keyList));
         }
 
         private void CreateInternal(string command)
@@ -78,9 +65,36 @@ namespace CSV2DBConverter.DBHandling
             + $" {tableName}_id integer PRIMARY KEY ";
             foreach (var field in tablePattern)
             {
-                createTableStatment += $", {field.AttributeName} text NOT NULL ";
+                if(!field.IsForeignKey)
+                    createTableStatment += $", {field.AttributeName} text NOT NULL ";
             }
+
             return createTableStatment;
+        }
+
+        private string CreateSQLStatementWithForeignKey(List<ForeignKey> keyList)
+        {
+            var createTableStatement = CreateSQLStatement();
+            foreach (var key in tablePattern.Where(m => m.IsForeignKey))
+            {
+                createTableStatement += $", {key.ForeignKeyID} integer ";
+            }
+
+            foreach (var key in keyList)
+            {
+                createTableStatement += $", {key.Key} integer ";
+            }
+            
+            foreach (var field in tablePattern.Where(m => m.IsForeignKey))
+            {
+                createTableStatement += $", FOREIGN KEY({field.ForeignKeyID}) REFERENCES {field.ForeignKeyTable}({field.ForeignKeyID})";
+            }
+
+            foreach (var key in keyList)
+            {
+                createTableStatement += $", FOREIGN KEY({key.Key}) REFERENCES {key.Table}({key.TableID})";
+            }
+            return createTableStatement;
         }
 
         private static string FinishStatement(string createTableStatment)
@@ -88,7 +102,5 @@ namespace CSV2DBConverter.DBHandling
             createTableStatment += ");";
             return createTableStatment;
         }
-    }
-
-    
+    }   
 }

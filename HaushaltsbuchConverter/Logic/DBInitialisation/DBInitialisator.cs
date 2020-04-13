@@ -5,32 +5,58 @@ using System.Collections.Generic;
 
 namespace HaushaltsbuchConverter.Logic.DBInitialisation
 {
-    public class TablePatternForFixedTables
+    internal class TablePatternForFixedTables
     {
-        private static string _KostenTableName = "KostenTable";
+        public readonly static string _KostenTableName = "KostenTable";
         public string KostenTableName = _KostenTableName;
-        public string[] ExcludedFieldsFromKostenTable = { "Währung" };
+        public string[] ExcludedFieldsFromKostenTable = { "Währung", "Valuta" };
         public int TableHeadLine = 14;
 
-        private static string _HashTableName = "HashesTable";
+        public readonly static string _HashTableName = "HashesTable";
         public string HashTableName = "HashesTable";
-        public List<CSVTableAttribute> HashTable = new List<CSVTableAttribute>()
+        public List<CSVTableAttribute> HashTable = new List<CSVTableAttribute>
         {
             new CSVTableAttribute("Hash")
         };
 
-        private static string _LabelsTableName = "LabelsTable";
+        public readonly static string _DateTableName = "DatumTable";
+        public string DateTableName = _DateTableName;
+        public List<CSVTableAttribute> DateTable = new List<CSVTableAttribute>
+        {
+            new CSVTableAttribute("Date")
+        };
+
+        public readonly static string _RecipientTableName = "EmpfängerTable";
+        public string RecipientTableName = _RecipientTableName;
+        public List<CSVTableAttribute> RecipientTable = new List<CSVTableAttribute>
+        {
+            new CSVTableAttribute("Empfänger")
+        };
+
+        public readonly static string _BookingTableName = "BuchungsTable";
+        public string BookingTableName = _BookingTableName;
+        public List<CSVTableAttribute> BookingTable = new List<CSVTableAttribute>
+        {
+            new CSVTableAttribute("Buchung")
+        };
+        public List<string> BookingValues = new List<string>()
+        {
+            "Gutschrift",
+            "Lastschrift",
+            "Dauerauftrag",
+            "Überweisung"
+        };
+
+        public readonly static string _LabelsTableName = "LabelsTable";
         public string LabelsTableName = "LabelsTable";
         public List<CSVTableAttribute> LabelsTable = new List<CSVTableAttribute>()
         {
             new CSVTableAttribute("Label")
         };
-
         public List<string> LabelsValues = new List<string>()
         {
             "Arzt",
-            "Auto 1",
-            "Auto 2",
+            "Auto",
             "Bahn",
             "Bargeld",
             "Büromaterial",
@@ -49,31 +75,54 @@ namespace HaushaltsbuchConverter.Logic.DBInitialisation
 
         public List<ForeignKey> ForeignKeys = new List<ForeignKey>
         {
-            new ForeignKey
-            {
-                Key = _HashTableName + "_id",
-                Table = _HashTableName,
-                TableID = _HashTableName + "_id"
-            },
-            new ForeignKey
-            {
-                Key = _LabelsTableName + "_id",
-                Table = _LabelsTableName,
-                TableID = _LabelsTableName + "_id"
-            }
+            CreateForeignKey(_HashTableName),
+            CreateForeignKey(_LabelsTableName)
         };
+
+        private static ForeignKey CreateForeignKey(string key)
+        {
+            return new ForeignKey
+            {
+                Key = key + "_id",
+                Table = key,
+                TableID = key + "_id"
+            };
+        }
     }
 
+    internal class TableExtractor
+    {
+        private static readonly string _DateExtractName = "Buchung";
+        private static readonly string _RecipientExtractName = "Auftraggeber_Empfänger";
+        private static readonly string _BookingTextExtractName = "Buchungstext";
+
+        public List<string> ExtractedTables = new List<string>
+        {
+            _DateExtractName, 
+            _RecipientExtractName,
+            _BookingTextExtractName
+        };
+
+        public Dictionary<string, string> TableMap = new Dictionary<string, string>
+        {
+            { _DateExtractName, TablePatternForFixedTables._DateTableName },
+            { _RecipientExtractName, TablePatternForFixedTables._RecipientTableName },
+            { _BookingTextExtractName, TablePatternForFixedTables._BookingTableName },
+
+        };
+    }
 
     public class DBInitialisator
     {
         IDBConnectionString _connectionString;
         TablePatternForFixedTables _tables;
+        TableExtractor _tableExtractor;
 
         public DBInitialisator(string dbName, string cwd)
         {
             _connectionString = new DBConncetionString(dbName, cwd);
             _tables = new TablePatternForFixedTables();
+            _tableExtractor = new TableExtractor();
         }
 
         public void Initialise()
@@ -84,42 +133,37 @@ namespace HaushaltsbuchConverter.Logic.DBInitialisation
 
         public void CreateTables(string filename)
         {
-            CreateHashesTable();
-            CreateLabelsTable();
-            FillLabelsTable();
+            CreateSubTable(_tables.LabelsTable, _tables.LabelsTableName);
+            CreateSubTable(_tables.RecipientTable, _tables.RecipientTableName);
+            CreateSubTable(_tables.DateTable, _tables.DateTableName);
+            CreateSubTable(_tables.HashTable, _tables.HashTableName);
+            CreateSubTable(_tables.BookingTable, _tables.BookingTableName);
+            FillTable(_tables.LabelsValues, _tables.LabelsTableName, _tables.LabelsTable);
+            FillTable(_tables.BookingValues, _tables.BookingTableName, _tables.BookingTable);
+
             CreateKostenTable(filename);
         }
 
-        private void CreateHashesTable()
+        private void CreateSubTable(List<CSVTableAttribute> tablePattern, string tableName)
         {
             var dbTableCreator = new DBTableCreator(
                             _connectionString,
-                            _tables.HashTable,
-                            _tables.HashTableName);
+                            tablePattern,
+                            tableName);
 
             dbTableCreator.Create();
         }
 
-        private void CreateLabelsTable()
+        private void FillTable(List<string> values, string tableName, List<CSVTableAttribute> tableAttributes)
         {
-            var dbTableCreator = new DBTableCreator(
-                            _connectionString,
-                            _tables.LabelsTable,
-                            _tables.LabelsTableName);
-
-            dbTableCreator.Create();
-        }
-
-        private void FillLabelsTable()
-        {
-            foreach(var value in _tables.LabelsValues)
+            foreach(var value in values)
             {
                 var csvRow = new CSVRow();
-                csvRow.Fill(_tables.LabelsTable, new string[] {value});
+                csvRow.Fill(tableAttributes, new string[] {value});
 
                 var dbInsertCommand = new InsertCommand(
                     _connectionString,
-                    _tables.LabelsTableName,
+                    tableName,
                     csvRow);
                 dbInsertCommand.Insert();
             }            
@@ -130,12 +174,27 @@ namespace HaushaltsbuchConverter.Logic.DBInitialisation
             var csvEntryParser = CreateCSVEntryParser(filename);
             csvEntryParser.Initialize();
 
+            var tablePattern = csvEntryParser.TablePattern;
+            AdjustForeignKeys(tablePattern);
+
             var dbTableCreator = new DBTableCreator(
                            _connectionString,
-                           csvEntryParser.TablePattern,
+                           tablePattern,
                            _tables.KostenTableName);
 
             dbTableCreator.CreateWithForeignKeys(_tables.ForeignKeys);
+        }
+
+        private void AdjustForeignKeys(List<CSVTableAttribute> tablePattern)
+        {
+            foreach (var entry in tablePattern)
+            {
+                if (_tableExtractor.ExtractedTables.Contains(entry.AttributeName))
+                {
+                    entry.IsForeignKey = true;
+                    entry.ForeignKeyTable = _tableExtractor.TableMap[entry.AttributeName];
+                }
+            }
         }
 
         private CSVReader CrearteCSVReader(string filename)

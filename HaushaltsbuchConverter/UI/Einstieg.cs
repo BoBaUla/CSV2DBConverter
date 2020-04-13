@@ -1,14 +1,6 @@
-﻿using CSV2DBConverter.DBHandling;
-using HaushaltsbuchConverter.Logic.DBInitialisation;
+﻿using HaushaltsbuchConverter.Logic.DBInitialisation;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HaushaltsbuchConverter.UI
@@ -25,9 +17,16 @@ namespace HaushaltsbuchConverter.UI
 
         private void btnInitialize_Click(object sender, EventArgs e)
         {
-            if(File.Exists(Path.Combine(_cwd, _dbName)))
+            if (File.Exists(Path.Combine(_cwd, _dbName)))
                 return;
 
+            DisableSender(sender);
+            btnInitializeLogic();
+            EnableSender(sender);
+        }
+
+        private void btnInitializeLogic()
+        {
             var dbInitilsator = new DBInitialisator(_dbName, _cwd);
             dbInitilsator.Initialise();
 
@@ -38,6 +37,16 @@ namespace HaushaltsbuchConverter.UI
             {
                 dbInitilsator.CreateTables(fileDialog.FileName);
             }
+        }
+
+        private static void EnableSender(object sender)
+        {
+            ((Control)sender).Enabled = true;
+        }
+
+        private static void DisableSender(object sender)
+        {
+            ((Control)sender).Enabled = false;
         }
     }
 }
