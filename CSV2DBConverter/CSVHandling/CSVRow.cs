@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CSV2DBConverter.CSVHandling
 {
@@ -34,6 +35,19 @@ namespace CSV2DBConverter.CSVHandling
                     Value = line[i]
                 });
             }
+        }
+
+        public override int GetHashCode()
+        {
+            var entries = Row.Select(m => m.Value);
+            var preHash = string.Empty;
+
+            foreach(var entry in entries)
+            {
+                preHash += entry;
+            }
+
+            return preHash.GetHashCode();
         }
     }
 
