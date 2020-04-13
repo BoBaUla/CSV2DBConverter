@@ -1,12 +1,10 @@
-﻿using CSV2DBConverter;
-using CSV2DBConverter.Adapter;
+﻿using CSV2DBConverter.Adapter;
 using CSV2DBConverter.CSVHandling;
 using CSV2DBConverter.DBHandling;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -52,7 +50,10 @@ namespace UITool
             if (restart)
                 _backgroundWorker.RunWorkerAsync();
             else
+            {
                 _runningTasks = new List<Task>();
+                CleanAfterDBAction();
+            }
         }
 
         private void _backgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -120,20 +121,23 @@ namespace UITool
         {
             var dbCreator = new DBCreator(_connectionString);
             dbCreator.Create();
-            var file = Path.Combine(path, name);
-            var fileExists = File.Exists(file);
 
-            rtbOutput.Clear();
-            rtbOutput.Text = "DB created: " + fileExists.ToString();
-            if (fileExists)
-                File.Delete(file);
-
-            rtbOutput.AppendText($"\nFile deleted: {!File.Exists(file) }");
+            CleanAfterDBAction();
         }
-
+    
         private void btnCreateTable_Click(object sender, EventArgs e)
         {
-            var dbTableCreator = new DBTableCreator(_connectionString, new string[]{"col1", "col2" }, "testName");
+            var tablePattern = new List<CSVTableAttribute>
+            {
+                new CSVTableAttribute{
+                    AttributeName ="col1"
+                },
+                new CSVTableAttribute{
+                    AttributeName ="col2"
+                }
+            };
+
+            var dbTableCreator = new DBTableCreator(_connectionString, tablePattern, "testName");
             dbTableCreator.Create();
         }
 
@@ -151,7 +155,7 @@ namespace UITool
             var tableName = "testName";
             var dbTableCreator = new DBTableCreator(
                 _connectionString, 
-                tablePattern.Select(m=> m.AttributeName).ToList(),
+                tablePattern,
                 tableName);
 
             var csvRow = new CSVRow();
@@ -174,13 +178,13 @@ namespace UITool
                 return;
             }
 
-            CSVEntryParser csvEntryParser = CreateCSVEntryParser();
+            var csvEntryParser = CreateCSVEntryParser();
 
             csvEntryParser.Initialize();
 
             var tableName = "testName";
             var dbTableCreator = CreateDBTableCreator(
-                csvEntryParser.TablePattern.Select(m => m.AttributeName).ToList(),
+                csvEntryParser.TablePattern,
                 tableName);
 
             dbTableCreator.Create();
@@ -191,8 +195,34 @@ namespace UITool
             _backgroundWorker.RunWorkerAsync();
         }
 
+        private void btnCreateWithFKey_Click(object sender, EventArgs e)
+        {
+            var tablePattern = new List<CSVTableAttribute>
+            {
+                new CSVTableAttribute{
+                    AttributeName ="col1"
+                },
+                new CSVTableAttribute{
+                    AttributeName ="col2"
+                }
+            };
+            var testTableName = "Testtable";
+            var testTableID = testTableName + "_id";
+            ForeignKey foreignKey = new ForeignKey
+            {
+                Key = testTableID,
+                Table = testTableName,
+                TableID = testTableID
+            };
+            var dbTableCreator = new DBTableCreator(_connectionString, tablePattern, testTableName);
+            dbTableCreator.Create();
+
+            dbTableCreator = new DBTableCreator(_connectionString, tablePattern, "someOtherTable");
+            dbTableCreator.CreateWithForeignKeys(new List<ForeignKey>() { foreignKey });
+        }
+
         #region extracted methods
-        private DBTableCreator CreateDBTableCreator(List<string> tablePattern, string tableName)
+        private DBTableCreator CreateDBTableCreator(List<CSVTableAttribute> tablePattern, string tableName)
         {
             return new DBTableCreator(
                 _connectionString,
@@ -226,6 +256,21 @@ namespace UITool
                 dbInsertCommand.Insert();
             }
         }
+
+        private void CleanAfterDBAction()
+        {
+            var file = Path.Combine(path, name);
+            var fileExists = File.Exists(file);
+
+            rtbOutput.Clear();
+            rtbOutput.Text = "DB created: " + fileExists.ToString();
+            if (fileExists)
+                File.Delete(file);
+
+            rtbOutput.AppendText($"\nFile deleted: {!File.Exists(file) }");
+        }
         #endregion
+
+
     }
 }

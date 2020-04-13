@@ -39,6 +39,7 @@
             this.btnCreateTable = new System.Windows.Forms.Button();
             this.btnInsertTable = new System.Windows.Forms.Button();
             this.btnCSV2DB = new System.Windows.Forms.Button();
+            this.btnCreateWithFKey = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnCSVPath
@@ -143,11 +144,22 @@
             this.btnCSV2DB.UseVisualStyleBackColor = true;
             this.btnCSV2DB.Click += new System.EventHandler(this.btnCSV2DB_Click);
             // 
+            // btnCreateWithFKey
+            // 
+            this.btnCreateWithFKey.Location = new System.Drawing.Point(12, 315);
+            this.btnCreateWithFKey.Name = "btnCreateWithFKey";
+            this.btnCreateWithFKey.Size = new System.Drawing.Size(115, 23);
+            this.btnCreateWithFKey.TabIndex = 12;
+            this.btnCreateWithFKey.Text = "CreateWithFKey";
+            this.btnCreateWithFKey.UseVisualStyleBackColor = true;
+            this.btnCreateWithFKey.Click += new System.EventHandler(this.btnCreateWithFKey_Click);
+            // 
             // ClickUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.btnCreateWithFKey);
             this.Controls.Add(this.btnCSV2DB);
             this.Controls.Add(this.btnInsertTable);
             this.Controls.Add(this.btnCreateTable);
@@ -180,6 +192,7 @@
         private System.Windows.Forms.Button btnCreateTable;
         private System.Windows.Forms.Button btnInsertTable;
         private System.Windows.Forms.Button btnCSV2DB;
+        private System.Windows.Forms.Button btnCreateWithFKey;
     }
 }
 
