@@ -167,7 +167,7 @@ namespace UITool
                 tableName,
                 csvRow);
             dbInsertCommand.Insert();
-            dbInsertCommand.Insert();
+            dbInsertCommand.Insert();     
         }
 
         private void btnCSV2DB_Click(object sender, EventArgs e)

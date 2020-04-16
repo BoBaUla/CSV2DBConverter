@@ -49,7 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\DBFilling\DBFiller.cs" />
     <Compile Include="Logic\DBInitialisation\DBInitialisator.cs" />
+    <Compile Include="Logic\DBInitialisation\TableExtractor.cs" />
+    <Compile Include="Logic\DBInitialisation\TablePatternForFixedTables.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\Einstieg.cs">

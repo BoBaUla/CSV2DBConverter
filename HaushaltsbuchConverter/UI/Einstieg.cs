@@ -1,6 +1,8 @@
-﻿using HaushaltsbuchConverter.Logic.DBInitialisation;
+﻿using HaushaltsbuchConverter.Logic.DBFilling;
+using HaushaltsbuchConverter.Logic.DBInitialisation;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HaushaltsbuchConverter.UI
@@ -24,6 +26,20 @@ namespace HaushaltsbuchConverter.UI
             btnInitializeLogic();
             EnableSender(sender);
         }
+        private void btnFillDBFromCSV_Click(object sender, EventArgs e)
+        {
+            if (!File.Exists(Path.Combine(_cwd, _dbName)))
+                return;
+            Task.Run();
+            NewMethod(sender);
+        }
+
+        private void NewMethod(object sender)
+        {
+            DisableSender(sender);
+            btnFillDBFromCSVLogic();
+            EnableSender(sender);
+        }
 
         private void btnInitializeLogic()
         {
@@ -39,6 +55,18 @@ namespace HaushaltsbuchConverter.UI
             }
         }
 
+        private void btnFillDBFromCSVLogic()
+        {
+            var fileDialog = new OpenFileDialog();
+            if (fileDialog.ShowDialog() == DialogResult.OK &&
+                fileDialog.FileNames.Length == 1 &&
+                fileDialog.FileName.ToLower().EndsWith(".csv"))
+            {
+                var dbFiller = new DBFiller(_dbName, _cwd, fileDialog.FileName);
+                dbFiller.Fill();
+            }
+        }
+
         private static void EnableSender(object sender)
         {
             ((Control)sender).Enabled = true;
@@ -48,5 +76,6 @@ namespace HaushaltsbuchConverter.UI
         {
             ((Control)sender).Enabled = false;
         }
+
     }
 }
